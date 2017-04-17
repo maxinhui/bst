@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.builbu.business.wechat.repository.WxConfigMapper">
+  <resultMap id="BaseResultMap" type="top.builbu.business.wechat.entity.WxConfig">
+     <id column="id" jdbcType="BIGINT" property="id" />
+     <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+     <result column="js_api_ticket" jdbcType="VARCHAR" property="jsApiTicket" />
+     <result column="expires_in" jdbcType="BIGINT" property="expiresIn" />
+     <result column="refresh_time" jdbcType="BIGINT" property="refreshTime" />
+     <result column="corp_id" jdbcType="VARCHAR" property="corpId" />
+     <result column="corp_secret" jdbcType="VARCHAR" property="corpSecret" />
+     <result column="pram_token" jdbcType="VARCHAR" property="pramToken" />
+  </resultMap>
+  
+  
+  <resultMap id="BaseResultMapDTO" type="top.builbu.business.wechat.dto.WxConfigDTO">
+     <id column="id" jdbcType="BIGINT" property="id" />
+     <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+     <result column="js_api_ticket" jdbcType="VARCHAR" property="jsApiTicket" />
+     <result column="expires_in" jdbcType="BIGINT" property="expiresIn" />
+     <result column="refresh_time" jdbcType="BIGINT" property="refreshTime" />
+     <result column="corp_id" jdbcType="VARCHAR" property="corpId" />
+     <result column="corp_secret" jdbcType="VARCHAR" property="corpSecret" />
+     <result column="pram_token" jdbcType="VARCHAR" property="pramToken" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+     id,access_token,js_api_ticket,expires_in,refresh_time,corp_id,
+     corp_secret,pram_token
+  </sql>
+<!-- 列表  -->
+  <select id="selectByList"  resultMap="BaseResultMapDTO">
+     select 
+     <include refid="Base_Column_List" />
+     from wx_config where 1=1
+      <if test="dto.id != null">
+      and  id = #{dto.id,jdbcType=BIGINT}
+      </if>
+      <if test="dto.accessToken != null">
+      and  access_token = #{dto.accessToken,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.jsApiTicket != null">
+      and  js_api_ticket = #{dto.jsApiTicket,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.expiresIn != null">
+      and  expires_in = #{dto.expiresIn,jdbcType=BIGINT}
+      </if>
+      <if test="dto.refreshTime != null">
+      and  refresh_time = #{dto.refreshTime,jdbcType=BIGINT}
+      </if>
+      <if test="dto.corpId != null">
+      and  corp_id = #{dto.corpId,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.corpSecret != null">
+      and  corp_secret = #{dto.corpSecret,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.pramToken != null">
+      and  pram_token = #{dto.pramToken,jdbcType=VARCHAR}
+      </if>
+     order by id desc limit #{offset},#{limit}
+  </select>
+  
+<!-- 主键查询  -->
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_config    
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+
+<!-- 主键删除 --> 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from wx_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+
+<!-- 插入  -->
+  <insert id="insert" parameterType="top.builbu.business.wechat.entity.WxConfig">
+    insert into wx_config (
+	    id,access_token,js_api_ticket,expires_in,refresh_time,corp_id,
+	    corp_secret,pram_token
+      )
+    values (
+         #{id,jdbcType=BIGINT}, #{accessToken,jdbcType=VARCHAR}, #{jsApiTicket,jdbcType=VARCHAR}, #{expiresIn,jdbcType=BIGINT}, #{refreshTime,jdbcType=BIGINT}, #{corpId,jdbcType=VARCHAR},
+         #{corpSecret,jdbcType=VARCHAR}, #{pramToken,jdbcType=VARCHAR}
+      )
+  </insert>
+ 
+<!-- 修改 -->  
+  <update id="updateByPrimaryKey" parameterType="top.builbu.business.wechat.entity.WxConfig">
+    update wx_config
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="accessToken != null">
+        access_token = #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="jsApiTicket != null">
+        js_api_ticket = #{jsApiTicket,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresIn != null">
+        expires_in = #{expiresIn,jdbcType=BIGINT},
+      </if>
+      <if test="refreshTime != null">
+        refresh_time = #{refreshTime,jdbcType=BIGINT},
+      </if>
+      <if test="corpId != null">
+        corp_id = #{corpId,jdbcType=VARCHAR},
+      </if>
+      <if test="corpSecret != null">
+        corp_secret = #{corpSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="pramToken != null">
+        pram_token = #{pramToken,jdbcType=VARCHAR}
+      </if>
+    </set>
+  
+    where id = #{id,jdbcType=BIGINT}
+   
+  </update>
+<!--   批量删除       -->
+  <delete id="deleteByAll" parameterType="java.lang.Long">
+      delete from wx_config where id in
+      <foreach item="id" collection="delids" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>  
+  
+  <select id="selectByCount" resultType="java.lang.Integer">
+		select count(1)
+		from wx_config where 1=1
+	      <if test="dto.id != null">
+	      and  id = #{dto.id,jdbcType=BIGINT}
+	      </if>
+	      <if test="dto.accessToken != null">
+	      and  access_token = #{dto.accessToken,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.jsApiTicket != null">
+	      and  js_api_ticket = #{dto.jsApiTicket,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.expiresIn != null">
+	      and  expires_in = #{dto.expiresIn,jdbcType=BIGINT}
+	      </if>
+	      <if test="dto.refreshTime != null">
+	      and  refresh_time = #{dto.refreshTime,jdbcType=BIGINT}
+	      </if>
+	      <if test="dto.corpId != null">
+	      and  corp_id = #{dto.corpId,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.corpSecret != null">
+	      and  corp_secret = #{dto.corpSecret,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.pramToken != null">
+	      and  pram_token = #{dto.pramToken,jdbcType=VARCHAR}
+	      </if>
+	</select>
+</mapper>
