@@ -158,4 +158,13 @@
 	      and  pram_token = #{dto.pramToken,jdbcType=VARCHAR}
 	      </if>
 	</select>
+	
+		<!-- token查询  -->
+
+  <select id="selectByPrimaryToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_config    
+    where pram_token = #{pramToken,jdbcType=VARCHAR}
+  </select>
 </mapper>

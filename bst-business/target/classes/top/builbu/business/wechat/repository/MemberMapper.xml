@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.builbu.business.wechat.repository.MemberMapper">
+  <resultMap id="BaseResultMap" type="top.builbu.business.wechat.entity.Member">
+     <id column="member_id" jdbcType="BIGINT" property="memberId" />
+     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+     <result column="name" jdbcType="VARCHAR" property="name" />
+     <result column="phone" jdbcType="VARCHAR" property="phone" />
+     <result column="address" jdbcType="VARCHAR" property="address" />
+     <result column="is_link" jdbcType="VARCHAR" property="isLink" />
+  </resultMap>
+  
+  
+  <resultMap id="BaseResultMapDTO" type="top.builbu.business.wechat.dto.MemberDTO">
+     <id column="member_id" jdbcType="BIGINT" property="memberId" />
+     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+     <result column="name" jdbcType="VARCHAR" property="name" />
+     <result column="phone" jdbcType="VARCHAR" property="phone" />
+     <result column="address" jdbcType="VARCHAR" property="address" />
+     <result column="is_link" jdbcType="VARCHAR" property="isLink" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+     member_id,open_id,name,phone,address,is_link,
+  </sql>
+<!-- 列表  -->
+  <select id="selectByList"  resultMap="BaseResultMapDTO">
+     select 
+     <include refid="Base_Column_List" />
+     from member where 1=1
+      <if test="dto.memberId != null">
+      and  member_id = #{dto.memberId,jdbcType=BIGINT}
+      </if>
+      <if test="dto.openId != null">
+      and  open_id = #{dto.openId,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.name != null">
+      and  name = #{dto.name,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.phone != null">
+      and  phone = #{dto.phone,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.address != null">
+      and  address = #{dto.address,jdbcType=VARCHAR}
+      </if>
+      <if test="dto.isLink != null">
+      and  is_link = #{dto.isLink,jdbcType=VARCHAR}
+      </if>
+     order by member_id desc limit #{offset},#{limit}
+  </select>
+  
+<!-- 主键查询  -->
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member    
+    where member_id = #{memberId,jdbcType=BIGINT}
+  </select>
+  
+
+<!-- 主键删除 --> 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from member
+    where member_id = #{memberId,jdbcType=BIGINT}
+  </delete>
+
+
+<!-- 插入  -->
+  <insert id="insert" parameterType="top.builbu.business.wechat.entity.Member">
+    insert into member (
+	    member_id,open_id,name,phone,address,is_link,
+      )
+    values (
+         #{memberId,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{isLink,jdbcType=VARCHAR},
+      )
+  </insert>
+ 
+<!-- 修改 -->  
+  <update id="updateByPrimaryKey" parameterType="top.builbu.business.wechat.entity.Member">
+    update member
+    <set>
+      <if test="memberId != null">
+        member_id = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="isLink != null">
+        is_link = #{isLink,jdbcType=VARCHAR}
+      </if>
+    </set>
+  
+    where member_id = #{memberId,jdbcType=BIGINT}
+   
+  </update>
+<!--   批量删除       -->
+  <delete id="deleteByAll" parameterType="java.lang.Long">
+      delete from member where member_id in
+      <foreach item="id" collection="delids" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>  
+  
+  <select id="selectByCount" resultType="java.lang.Integer">
+		select count(1)
+		from member where 1=1
+	      <if test="dto.memberId != null">
+	      and  member_id = #{dto.memberId,jdbcType=BIGINT}
+	      </if>
+	      <if test="dto.openId != null">
+	      and  open_id = #{dto.openId,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.name != null">
+	      and  name = #{dto.name,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.phone != null">
+	      and  phone = #{dto.phone,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.address != null">
+	      and  address = #{dto.address,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dto.isLink != null">
+	      and  is_link = #{dto.isLink,jdbcType=VARCHAR}
+	      </if>
+	</select>
+</mapper>

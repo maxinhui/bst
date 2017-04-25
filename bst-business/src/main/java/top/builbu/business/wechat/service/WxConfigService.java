@@ -1,5 +1,7 @@
 package top.builbu.business.wechat.service;
 
+import java.util.Map;
+
 import top.builbu.business.wechat.dto.WxConfigDTO;
 import top.builbu.business.wechat.entity.WxConfig;
 import top.builbu.common.dto.PageDTO;
@@ -19,4 +21,9 @@ public interface WxConfigService{
      ResultDO<?> deleteById(Long id);
      
      ResultDO<?> deleteByCheck(Long[] delids);
+
+	ResultDO<WxConfig> getToken(String pramToken);
+
+	ResultDO<Map<String, Object>> getTiekct(String url, String pramToken)
+			throws Exception;
 }

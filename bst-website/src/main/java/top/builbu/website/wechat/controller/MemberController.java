@@ -1,59 +1,50 @@
 package top.builbu.website.wechat.controller;
 
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
-
 import top.builbu.business.wechat.dto.MemberDTO;
-import top.builbu.business.wechat.dto.WxConfigDTO;
-import top.builbu.business.wechat.entity.WxConfig;
-import top.builbu.business.wechat.service.WxConfigService;
+import top.builbu.business.wechat.entity.Member;
+import top.builbu.business.wechat.service.MemberService;
 import top.builbu.common.dto.PageDTO;
 import top.builbu.common.dto.ResultDO;
 import top.builbu.common.dto.ResultCode;
 import top.builbu.common.dto.BaseResultCode;
 import top.builbu.common.util.page.Pagination;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import top.builbu.core.util.UploadUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/wxConfig")
-public class WxConfigController {
+@RequestMapping("/member")
+public class MemberController {
 
 	@Autowired
-	private WxConfigService wxConfigService;
+	private MemberService memberService;
 	
 	
 	@RequestMapping("/add")
 	public String add(){
-		log.info("for ：wxConfigAdd");
-		return "/wechat/wxConfigAdd";
+		log.info("for ：memberAdd");
+		return "/wechat/memberAdd";
 	}
 	
 	
 	@RequestMapping("/selectByList")
-	public String selectByList(HttpServletRequest request,WxConfigDTO dto,Pagination page){
+	public String selectByList(HttpServletRequest request,MemberDTO dto,Pagination page){
 		log.info(JSONObject.toJSONString(page));
-		PageDTO<WxConfigDTO> result = null;
+		PageDTO<MemberDTO> result = null;
 		try{
-		    result = wxConfigService.selectByList(dto,page);
+		    result = memberService.selectByList(dto,page);
 		    request.setAttribute("pageDTO", result);
 		    request.setAttribute("searchDTO", dto);
-		    return "/wechat/wxConfigList";
+		    return "/wechat/memberList";
 	    } catch (Exception e) {
 			log.info(ExceptionUtils.getStackTrace(e));
 			return ResultCode.ERROR;
@@ -65,12 +56,12 @@ public class WxConfigController {
 	
 	@RequestMapping("/selectById")
 	public String selectById(HttpServletRequest request,Long id){
-	  ResultDO<WxConfig> result = null;
+	  ResultDO<Member> result = null;
 	    try{
-		    result = wxConfigService.selectById(id);
+		    result = memberService.selectById(id);
 		    if(result.isSuccess()){
 		       request.setAttribute("module",result.getModule());
-		       return "/wechat/wxConfigEdit";
+		       return "/wechat/memberEdit";
 		    }else{
 		       return ResultCode.ERROR;
 		    }
@@ -84,10 +75,10 @@ public class WxConfigController {
 	
     @ResponseBody
 	@RequestMapping("/save")
-	public ResultDO<?> save(WxConfigDTO dto){
+	public ResultDO<?> save(MemberDTO dto){
 		ResultDO<?> result = null;
 		 try{
-			 result = wxConfigService.save(dto);
+			 result = memberService.save(dto);
 			} catch (Exception e) {
 			 log.info(ExceptionUtils.getStackTrace(e));
 			 result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
@@ -99,10 +90,10 @@ public class WxConfigController {
 	
 	@ResponseBody
 	@RequestMapping("/update")
-    public ResultDO<?> update(WxConfigDTO dto){
+    public ResultDO<?> update(MemberDTO dto){
     	ResultDO<?> result = null;
     	 try{
-			 result = wxConfigService.update(dto);
+			 result = memberService.update(dto);
 			} catch (Exception e) {
 			 log.info(ExceptionUtils.getStackTrace(e));
 			 result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
@@ -116,7 +107,7 @@ public class WxConfigController {
     public ResultDO<?> deleteById(Long id){
     	ResultDO<?> result = null;
     	 try{
-			 result = wxConfigService.deleteById(id);
+			 result = memberService.deleteById(id);
 			} catch (Exception e) {
 			 log.info(ExceptionUtils.getStackTrace(e));
 			 result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
@@ -130,7 +121,7 @@ public class WxConfigController {
     public ResultDO<?> deleteByCheck(Long[] delids){
     	ResultDO<?> result = null;
    	 try{
-   		 result  =  wxConfigService.deleteByCheck(delids);
+   		 result  =  memberService.deleteByCheck(delids);
 		} catch (Exception e) {
 		 log.info(ExceptionUtils.getStackTrace(e));
 		 result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
@@ -139,39 +130,4 @@ public class WxConfigController {
 		 return result;
     }
     
-	@ResponseBody
-	@RequestMapping(value="/token")
-	public ResultDO<WxConfig> selectAccessToken(){
-	    ResultDO<WxConfig> result = null;
-		try {
-			result = wxConfigService.getToken("lile");
-		} catch (Exception e) {
-			log.error(ExceptionUtils.getStackTrace(e));
-			result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
-		}
-		return result;
-	}
-	
-	
-	@ResponseBody
-	@RequestMapping("/getTicket")
-	public JSONObject getTicket(String url,HttpSession session){
-		JSONObject json=new JSONObject();
-		ResultDO<Map<String, Object>> result=new ResultDO<>(BaseResultCode.COMMON_DB_ERRORS,Boolean.FALSE);
-		try {
-			result=wxConfigService.getTiekct(url,"lile");
-			json.put("data", result);
-			//MemberDTO memberDTO =  (MemberDTO) session.getAttribute(Lile.USERKEY);
-			
-		} catch (Exception e) {
-			log.error(e.getStackTrace().toString());
-			return json;
-		}
-		return json;
-	}
-	
-	@RequestMapping("/rs")
-	public String rs(){
-		return "/wechat/index";
-	}
 }

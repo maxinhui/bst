@@ -49,5 +49,12 @@ public interface WxConfigMapper {
     int deleteByAll(@Param("delids")Long[] delids);
     
     int selectByCount(@Param("dto")WxConfigDTO dto);
+    
+    /**
+     *token查询
+     *
+     */
+    WxConfig selectByPrimaryToken(@Param("pramToken")String pramToken); 
+
 
 }
