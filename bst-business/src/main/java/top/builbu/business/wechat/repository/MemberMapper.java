@@ -20,9 +20,9 @@ public interface MemberMapper {
      *主键查询
      *
      */
-    Member selectByPrimaryKey(Long member_id); 
+    Member selectByPrimaryKey(@Param("openId")String openId); 
 
-   
+    Member selectByOpenId(@Param("openId")String openId); 
     /**
      *主键查询
      *

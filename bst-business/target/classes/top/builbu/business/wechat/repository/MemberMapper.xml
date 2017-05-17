@@ -8,6 +8,7 @@
      <result column="phone" jdbcType="VARCHAR" property="phone" />
      <result column="address" jdbcType="VARCHAR" property="address" />
      <result column="is_link" jdbcType="VARCHAR" property="isLink" />
+     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   
   
@@ -17,11 +18,11 @@
      <result column="name" jdbcType="VARCHAR" property="name" />
      <result column="phone" jdbcType="VARCHAR" property="phone" />
      <result column="address" jdbcType="VARCHAR" property="address" />
-     <result column="is_link" jdbcType="VARCHAR" property="isLink" />
+     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
-     member_id,open_id,name,phone,address,is_link,
+     member_id,open_id,name,phone,address,is_link,create_time
   </sql>
 <!-- 列表  -->
   <select id="selectByList"  resultMap="BaseResultMapDTO">
@@ -51,13 +52,21 @@
   
 <!-- 主键查询  -->
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from member    
-    where member_id = #{memberId,jdbcType=BIGINT}
+    where open_id = #{openId,jdbcType=VARCHAR} and is_link = 'N' 
   </select>
-  
+
+<!-- 主键查询  -->
+
+  <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member    
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
 
 <!-- 主键删除 --> 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -69,10 +78,10 @@
 <!-- 插入  -->
   <insert id="insert" parameterType="top.builbu.business.wechat.entity.Member">
     insert into member (
-	    member_id,open_id,name,phone,address,is_link,
+	    member_id,open_id,name,phone,address,is_link,create_time
       )
     values (
-         #{memberId,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{isLink,jdbcType=VARCHAR},
+         #{memberId,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{isLink,jdbcType=VARCHAR},#{createTime}
       )
   </insert>
  
@@ -95,12 +104,12 @@
       <if test="address != null">
         address = #{address,jdbcType=VARCHAR},
       </if>
-      <if test="isLink != null">
-        is_link = #{isLink,jdbcType=VARCHAR}
-      </if>
+      
+        is_link = 'Y'
+     
     </set>
   
-    where member_id = #{memberId,jdbcType=BIGINT}
+    where open_id = #{openId,jdbcType=VARCHAR} and is_link = 'N'
    
   </update>
 <!--   批量删除       -->

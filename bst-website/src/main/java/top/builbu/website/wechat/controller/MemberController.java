@@ -1,13 +1,16 @@
 package top.builbu.website.wechat.controller;
 
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONObject;
+
 import top.builbu.business.wechat.dto.MemberDTO;
 import top.builbu.business.wechat.entity.Member;
 import top.builbu.business.wechat.service.MemberService;
@@ -15,9 +18,8 @@ import top.builbu.common.dto.PageDTO;
 import top.builbu.common.dto.ResultDO;
 import top.builbu.common.dto.ResultCode;
 import top.builbu.common.dto.BaseResultCode;
+import top.builbu.common.dto.UserCode;
 import top.builbu.common.util.page.Pagination;
-import org.springframework.web.multipart.MultipartFile;
-import top.builbu.core.util.UploadUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -53,23 +55,22 @@ public class MemberController {
 	}
 	
 	
-	
+	@ResponseBody
 	@RequestMapping("/selectById")
-	public String selectById(HttpServletRequest request,Long id){
-	  ResultDO<Member> result = null;
+	public String selectById(HttpServletRequest request,HttpSession session){
+	  ResultDO<?> result = null;
 	    try{
-		    result = memberService.selectById(id);
-		    if(result.isSuccess()){
-		       request.setAttribute("module",result.getModule());
-		       return "/wechat/memberEdit";
-		    }else{
-		       return ResultCode.ERROR;
-		    }
+	    	String openId = (String) session.getAttribute(UserCode.LOGINUSER);
+	    	if(null != openId && !"".equals(openId)){
+	    		result = memberService.selectById(openId);
+	    	}
+		    
 		} catch (Exception e) {
 			log.info(ExceptionUtils.getStackTrace(e));
-			return ResultCode.ERROR;
+			result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);
 		}
-		
+	    
+		return JSONObject.toJSONString(result);
 	}
 	
 	
@@ -85,15 +86,21 @@ public class MemberController {
 			 result.setCloseCurrent(Boolean.FALSE);
 			}
 		 return result;
-	}
+	}  
 	
 	
 	@ResponseBody
-	@RequestMapping("/update")
-    public ResultDO<?> update(MemberDTO dto){
+	@RequestMapping("/create")
+    public ResultDO<?> update(HttpSession session,MemberDTO dto){
     	ResultDO<?> result = null;
     	 try{
-			 result = memberService.update(dto);
+    		 String openId = (String) session.getAttribute(UserCode.LOGINUSER);
+    		 if(null != openId && !"".equals(openId)){
+    			 dto.setOpenId(openId);
+    			 result = memberService.update(dto);
+    		 }else{
+    			 result = new ResultDO<>(BaseResultCode.COMMON_NO_CHECK,Boolean.FALSE);
+    		 }
 			} catch (Exception e) {
 			 log.info(ExceptionUtils.getStackTrace(e));
 			 result = new ResultDO<>(BaseResultCode.COMMON_FAIL,Boolean.FALSE);

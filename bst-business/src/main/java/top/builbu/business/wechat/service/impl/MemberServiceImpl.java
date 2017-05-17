@@ -37,12 +37,12 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
     @Override
-	public ResultDO<Member> selectById(Long id){
-	    ResultDO<Member> resultDo = null;
-	    if(null!=id&&!"".equals(id)){
-	        Member result = memberMapper.selectByPrimaryKey(id);
+	public ResultDO<?> selectById(String openId){
+	    ResultDO<?> resultDo = null;
+	    if(null!=openId&&!"".equals(openId)){
+	        Member result = memberMapper.selectByPrimaryKey(openId);
 	        if(null!=result){
-	            resultDo = new ResultDO<>(result);
+	            resultDo = new ResultDO<>(BaseResultCode.TRUE,Boolean.TRUE);
 	        }else{
 	            resultDo = new ResultDO<>(BaseResultCode.COMMON_NO_DATA,Boolean.FALSE);
 	        }
@@ -51,6 +51,22 @@ public class MemberServiceImpl implements MemberService{
 	    }
 	    return resultDo;
 	}
+    
+    @Override
+   	public ResultDO<?> selectByOpenId(String openId){
+   	    ResultDO<?> resultDo = null;
+   	    if(null!=openId&&!"".equals(openId)){
+   	        Member result = memberMapper.selectByOpenId(openId);
+   	        if(null!=result){
+   	            resultDo = new ResultDO<>(BaseResultCode.TRUE,Boolean.TRUE);
+   	        }else{
+   	            resultDo = new ResultDO<>(BaseResultCode.COMMON_NO_DATA,Boolean.FALSE);
+   	        }
+   	    }else{
+   	        resultDo = new ResultDO<>(BaseResultCode.COMMON_WRONG_PARAMS,Boolean.FALSE);
+   	    }
+   	    return resultDo;
+   	}
 	
     @Override
     public ResultDO<?> save(MemberDTO dto){

@@ -10,7 +10,7 @@ public interface MemberService{
      
      PageDTO<MemberDTO> selectByList(MemberDTO dto, Pagination page);
      
-     ResultDO<Member> selectById(Long id);
+   
      
      ResultDO<?> save(MemberDTO dto);
 
@@ -19,4 +19,10 @@ public interface MemberService{
      ResultDO<?> deleteById(Long id);
      
      ResultDO<?> deleteByCheck(Long[] delids);
+
+	ResultDO<?> selectById(String openId);
+
+
+
+	ResultDO<?> selectByOpenId(String openId);
 }

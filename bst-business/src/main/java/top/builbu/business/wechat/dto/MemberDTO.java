@@ -34,6 +34,7 @@ public class MemberDTO {
 	    **/
         private String isLink;  
           
+        private Date createTime;
           
         public Long getMemberId(){  
             return this.memberId;  
@@ -81,6 +82,14 @@ public class MemberDTO {
        
         public void setIsLink(String isLink){  
             this.isLink = isLink == "" ? null : isLink.trim();
-        } 
+        }
+
+		public Date getCreateTime() {
+			return createTime;
+		}
+
+		public void setCreateTime(Date createTime) {
+			this.createTime = createTime;
+		} 
          
 }  
